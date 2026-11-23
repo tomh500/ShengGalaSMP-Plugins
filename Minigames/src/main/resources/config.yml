@@ -1,0 +1,56 @@
+rotation:
+  timezone: Asia/Shanghai
+  start-date: '2026-11-23'
+  order: [tnt-run, murder-mystery]
+  override: daily
+  force-return: lobby
+  # 首条匹配的时段优先。跨午夜按开始当天判断星期及日期。
+  windows: []
+  # 示例：
+  # windows:
+  #   - games: [tnt-run, murder-mystery]
+  #     days: [FRIDAY, SATURDAY]
+  #     from: '19:00'
+  #     until: '01:00'
+  #     date-from: '2026-11-23'
+  #     date-until: '2026-12-31'
+proxy:
+  lobby-server: lobby
+npc:
+  enabled: true
+  name: 小游戏向导
+  room-npcs: true
+ui:
+  bedrock-forms: true
+countdown:
+  vip-players: []
+qq-bridge:
+  lobby-chat: true
+rooms:
+  room-1:
+    enabled: true
+    name: 一号房
+    game: auto
+  room-2:
+    enabled: true
+    name: 二号房
+    game: auto
+    # 可为这个房间覆盖下方任意玩法参数。
+    # games:
+    #   tnt-run:
+    #     min-players: 4
+    #     max-players: 16
+    #     countdown-seconds: 20
+games:
+  tnt-run:
+    min-players: 2
+    max-players: 12
+    countdown-seconds: 120
+    round-seconds: 180
+    disappear-ticks: 6
+  murder-mystery:
+    min-players: 3
+    max-players: 12
+    countdown-seconds: 120
+    round-seconds: 180
+    gold-for-bow: 5

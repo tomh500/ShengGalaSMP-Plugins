@@ -1,0 +1,48 @@
+plugins { id 'net.fabricmc.fabric-loom' version '1.17.21' }
+
+def target = providers.gradleProperty('minecraftTarget').orElse('26.3').get()
+def masterGalJar = providers.gradleProperty('masterGalJar').map { file(it) }.getOrNull()
+if (masterGalJar == null || !masterGalJar.isFile()) {
+    throw new GradleException('Supply -PmasterGalJar with the FabricMasterGAL JAR for the selected Minecraft target.')
+}
+def versions = [
+    '26.2': [api: '0.161.0+26.2', key: '2.0.5+e2bdee789e', hud: '25.3.3+515ac5339e',
+             command: '3.1.0+00cb03469e', lifecycle: '4.1.4+29b6eb019e', networking: '6.3.4+2989c6a09e'],
+    '26.3': [api: '0.165.0+26.3', key: '2.0.8+3434d6d95d', hud: '27.2.0+eb9fe70b5d',
+             command: '3.1.2+fcdff87f5d', lifecycle: '4.1.9+ffef5f675d', networking: '6.4.0+a21c9eb65d']
+][target]
+if (!versions) {
+    throw new GradleException("Unsupported Minecraft target: ${target}")
+}
+
+layout.buildDirectory.set(layout.projectDirectory.dir("build/${target}"))
+group = 'top.luotiany1'
+version = "0.2.0+${target}"
+base { archivesName = 'GalVoice-Fabric' }
+repositories { mavenCentral() }
+
+dependencies {
+    minecraft "com.mojang:minecraft:${target}"
+    implementation 'net.fabricmc:fabric-loader:0.19.5'
+    implementation "net.fabricmc.fabric-api:fabric-key-mapping-api-v1:${versions.key}"
+    implementation "net.fabricmc.fabric-api:fabric-rendering-v1:${versions.hud}"
+    implementation "net.fabricmc.fabric-api:fabric-command-api-v2:${versions.command}"
+    implementation "net.fabricmc.fabric-api:fabric-lifecycle-events-v1:${versions.lifecycle}"
+    implementation "net.fabricmc.fabric-api:fabric-networking-api-v1:${versions.networking}"
+    implementation files(masterGalJar)
+}
+
+sourceSets.main.java.srcDir '../common/src/main/java'
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 25
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'minecraftTarget', target
+    inputs.property 'fabricApi', versions.api
+    filesMatching('fabric.mod.json') {
+        expand(version: project.version, minecraftTarget: target, fabricApi: versions.api)
+    }
+}

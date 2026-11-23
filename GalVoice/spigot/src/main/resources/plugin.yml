@@ -1,0 +1,12 @@
+name: GalVoice
+main: top.luotiany1.galvoice.GalVoicePlugin
+version: 0.2.0
+depend: [SpigotMasterGAL]
+softdepend: [BedWars1058, Minigames]
+permissions:
+  galvoice.speak:
+    description: Send voice audio
+    default: true
+  galvoice.listen:
+    description: Receive voice audio
+    default: true

@@ -1,0 +1,19 @@
+name: Minigames
+version: 0.2.0
+main: top.luotiany1.minigames.MinigamesPlugin
+load: STARTUP
+softdepend: [SpigotMasterGAL, Multiverse-Core]
+commands:
+  minigames:
+    aliases: [mg, tntrun]
+    description: Join or inspect the daily minigame
+    usage: /minigames [menu|join|leave|rooms|watch|lobby|mode|start]
+permissions:
+  minigames.play:
+    default: true
+  minigames.manage:
+    default: op
+  minigames.countdown.admin:
+    default: op
+  minigames.countdown.vip:
+    default: false

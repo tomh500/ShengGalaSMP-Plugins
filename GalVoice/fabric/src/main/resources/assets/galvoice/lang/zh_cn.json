@@ -1,0 +1,22 @@
+{
+  "key.category.galvoice.voice": "GalVoice 局内语音",
+  "key.galvoice.push_to_talk": "按住说话",
+  "key.galvoice.settings": "语音设置",
+  "galvoice.settings": "语音设置",
+  "galvoice.device.input": "麦克风：%s",
+  "galvoice.device.output": "播放设备：%s",
+  "galvoice.device.default": "系统默认",
+  "galvoice.device.missing": "设备不可用",
+  "galvoice.mic_gain": "麦克风增益：%s%%",
+  "galvoice.output_volume": "播放音量：%s%%",
+  "galvoice.listen.nearby": "收听范围：附近",
+  "galvoice.listen.world": "收听范围：同世界",
+  "galvoice.channel.nearby": "附近语音",
+  "galvoice.channel.world": "同世界语音",
+  "galvoice.channel.team": "队内语音",
+  "galvoice.channel.spectator": "观战语音",
+  "galvoice.sending": "你正在发言",
+  "galvoice.error.input": "无法打开麦克风",
+  "galvoice.error.output": "无法打开播放设备",
+  "galvoice.error.save": "无法保存语音设置"
+}

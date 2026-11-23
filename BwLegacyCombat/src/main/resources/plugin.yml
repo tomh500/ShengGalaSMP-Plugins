@@ -1,0 +1,4 @@
+name: BwLegacyCombat
+version: 1.0.0
+main: top.luotiany1.bwcombat.BwLegacyCombat
+description: Legacy melee combat for the BedWars Spigot 1.12.2 backend

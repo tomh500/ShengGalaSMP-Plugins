@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "galvoice",
+  "version": "${version}",
+  "name": "GalVoice",
+  "description": "In-game voice for MasterGAL servers",
+  "environment": "client",
+  "entrypoints": { "client": ["top.luotiany1.galvoice.GalVoiceClient"] },
+  "depends": {
+    "minecraft": "=${minecraftTarget}",
+    "java": ">=25",
+    "fabricloader": ">=0.19.5",
+    "fabric-api": ">=${fabricApi}",
+    "fabricmastergal": ">=0.2.0"
+  }
+}

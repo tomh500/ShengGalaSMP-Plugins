@@ -1,0 +1,20 @@
+proximity:
+  enabled: true
+  range-blocks: 48.0
+  fade-start-blocks: 8.0
+
+bedwars:
+  # Outside live play, waiting/starting players in the same arena may use proximity.
+  waiting-proximity: true
+
+spectators:
+  enabled: true
+
+listen-mode:
+  # Let each listener opt in to all nearby-channel speech in their current world.
+  allow-world: false
+
+# Main scoreboard teams in these worlds get team-only audio. Teamless players use
+# proximity among themselves. BedWars and Minigames use their own game state.
+scoreboard-team-worlds: []
+disabled-worlds: []

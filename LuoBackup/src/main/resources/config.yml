@@ -1,0 +1,21 @@
+# 路径相对于代理的工作目录；也可填写绝对路径。每个子服必须和代理共享文件系统。
+backup-directory: plugins/LuoBackup/backups
+servers:
+  survival:
+    enabled: true
+    directory: ../server/survival
+    interval-hours: 72
+    slots: 3
+    # 0 表示不限制；否则为此子服所有已完成 ZIP 的总字节数。
+    max-size-bytes: 0
+    # full: stop 或 delete-oldest
+    full: delete-oldest
+    world: world
+    nether: world_nether
+    end: world_the_end
+    include:
+      world: true
+      nether: true
+      end: true
+      player-data: true
+      plugins: true

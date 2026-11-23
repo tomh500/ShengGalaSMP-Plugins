@@ -1,0 +1,22 @@
+{
+  "key.category.galvoice.voice": "GalVoice",
+  "key.galvoice.push_to_talk": "Push to talk",
+  "key.galvoice.settings": "Voice settings",
+  "galvoice.settings": "Voice settings",
+  "galvoice.device.input": "Microphone: %s",
+  "galvoice.device.output": "Playback device: %s",
+  "galvoice.device.default": "System default",
+  "galvoice.device.missing": "Device unavailable",
+  "galvoice.mic_gain": "Microphone gain: %s%%",
+  "galvoice.output_volume": "Playback volume: %s%%",
+  "galvoice.listen.nearby": "Listening range: Nearby",
+  "galvoice.listen.world": "Listening range: Current world",
+  "galvoice.channel.nearby": "Nearby",
+  "galvoice.channel.world": "Current world",
+  "galvoice.channel.team": "Team",
+  "galvoice.channel.spectator": "Spectators",
+  "galvoice.sending": "You are speaking",
+  "galvoice.error.input": "Could not open the microphone",
+  "galvoice.error.output": "Could not open the playback device",
+  "galvoice.error.save": "Could not save voice settings"
+}
