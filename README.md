@@ -23,3 +23,7 @@
 ```
 
 输出在 `build/`。把 BungeeCord 插件安装到代理的 `plugins/`，把其余服务端插件安装到对应 Spigot 子服的 `plugins/`。ShengGalaMetadata 依赖 Java 17 或更新版本，品牌文字定义在源码的 `BRAND` 常量中。安装 Minigames 后，先配置房间、主大厅名称和回主大厅的路由，再对玩家开放。
+
+## 许可证
+
+本仓库中 BwLegacyCombat、GalVoice、LuoBackup、Minigames、ShengGalaMetadata 的自研源码、配置示例、文档和构建脚本采用 `MIT OR Apache-2.0`。使用者可选择 [MIT](LICENSE) 或 [Apache License 2.0](LICENSE-APACHE) 的条款。第三方依赖及独立仓库中的组件继续适用各自的许可证与署名。
