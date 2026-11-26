@@ -2,18 +2,20 @@ package top.luotiany1.galvoice;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 final class VoiceAudio {
-    private static final Logger LOG = LoggerFactory.getLogger("GalVoice");
+    private static final Logger LOG = Logger.getLogger("GalVoice");
     private static final long FRAME = TimeUnit.MILLISECONDS.toNanos(VoicePacket.MILLIS);
     private static final long MAX_AGE = TimeUnit.MILLISECONDS.toNanos(200);
     private static final long OUTPUT_IDLE = TimeUnit.SECONDS.toNanos(2);
@@ -28,9 +30,37 @@ final class VoiceAudio {
     private volatile boolean outputFailed;
     private volatile boolean closed;
 
-    private record Capture(String device) {}
-    private record Captured(Capture request, long time, byte[] bytes) {}
-    private record Received(long generation, long time, VoicePacket packet) {}
+    private static final class Capture {
+        final String device;
+
+        Capture(String device) {
+            this.device = device;
+        }
+    }
+
+    private static final class Captured {
+        final Capture request;
+        final long time;
+        final byte[] bytes;
+
+        Captured(Capture request, long time, byte[] bytes) {
+            this.request = request;
+            this.time = time;
+            this.bytes = bytes;
+        }
+    }
+
+    private static final class Received {
+        final long generation;
+        final long time;
+        final VoicePacket packet;
+
+        Received(long generation, long time, VoicePacket packet) {
+            this.generation = generation;
+            this.time = time;
+            this.packet = packet;
+        }
+    }
 
     VoiceAudio(VoiceSettings settings) {
         this.settings = settings;
@@ -69,7 +99,7 @@ final class VoiceAudio {
     }
 
     boolean inputFailed() {
-        var failure = failedCapture;
+        Capture failure = failedCapture;
         return failure != null && failure.device.equals(settings.get().input());
     }
 
@@ -114,8 +144,8 @@ final class VoiceAudio {
     }
 
     private void capture(Capture current) throws InterruptedException {
-        try (var input = (TargetDataLine) SoundDevice.open(current.device, true)) {
-            var format = input.getFormat();
+        try (TargetDataLine input = (TargetDataLine) SoundDevice.open(current.device, true)) {
+            AudioFormat format = input.getFormat();
             byte[] pcm = new byte[SoundDevice.frameBytes(format)];
             long lastRead = System.nanoTime();
             while (!closed && current == request) {
@@ -135,12 +165,12 @@ final class VoiceAudio {
             }
         } catch (LineUnavailableException | RuntimeException failure) {
             failedCapture = current;
-            LOG.debug("Could not capture voice", failure);
+            LOG.log(Level.FINE, "Could not capture voice", failure);
         }
     }
 
     private void playbackLoop() {
-        var mixer = new Playback();
+        Playback mixer = new Playback();
         try {
             long next = System.nanoTime();
             while (!closed) {
@@ -227,7 +257,7 @@ final class VoiceAudio {
 
         private boolean mixInto(int[] mix, long now) {
             boolean hasAudio = false;
-            var iterator = streams.values().iterator();
+            Iterator<Stream> iterator = streams.values().iterator();
             while (iterator.hasNext()) {
                 Stream stream = iterator.next();
                 if (now - stream.last > MAX_AGE) {
@@ -270,7 +300,7 @@ final class VoiceAudio {
             closeOutput();
             outputFailed = true;
             retryAfter = now + TimeUnit.SECONDS.toNanos(3);
-            LOG.debug("Could not play voice", failure);
+            LOG.log(Level.FINE, "Could not play voice", failure);
         }
 
         private void closeOutput() {

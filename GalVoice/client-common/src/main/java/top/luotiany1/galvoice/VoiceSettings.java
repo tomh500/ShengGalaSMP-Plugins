@@ -1,30 +1,60 @@
 package top.luotiany1.galvoice;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 final class VoiceSettings {
-    private static final Logger LOG = LoggerFactory.getLogger("GalVoice");
+    private static final Logger LOG = Logger.getLogger("GalVoice");
     private final Path path;
     private volatile Snapshot current;
     private boolean worldListening;
 
-    record Snapshot(String input, String output, double micGain, double volume) {}
+    static final class Snapshot {
+        private final String input;
+        private final String output;
+        private final double micGain;
+        private final double volume;
+
+        Snapshot(String input, String output, double micGain, double volume) {
+            this.input = input;
+            this.output = output;
+            this.micGain = micGain;
+            this.volume = volume;
+        }
+
+        String input() {
+            return input;
+        }
+
+        String output() {
+            return output;
+        }
+
+        double micGain() {
+            return micGain;
+        }
+
+        double volume() {
+            return volume;
+        }
+    }
 
     VoiceSettings(Path path) {
         this.path = path;
         Properties props = new Properties();
         if (Files.exists(path)) {
-            try (var input = Files.newInputStream(path)) {
+            try (InputStream input = Files.newInputStream(path)) {
                 props.load(input);
             } catch (IOException | IllegalArgumentException failure) {
-                LOG.warn("Unable to read GalVoice settings", failure);
+                LOG.log(Level.WARNING, "Unable to read GalVoice settings", failure);
             }
         }
         current = new Snapshot(props.getProperty("input", ""), props.getProperty("output", ""),
@@ -69,7 +99,7 @@ final class VoiceSettings {
             Files.createDirectories(path.getParent());
             Path temp = Files.createTempFile(path.getParent(), "galvoice-", ".tmp");
             try {
-                try (var output = Files.newOutputStream(temp)) {
+                try (OutputStream output = Files.newOutputStream(temp)) {
                     props.store(output, "GalVoice");
                 }
                 try {
@@ -82,7 +112,7 @@ final class VoiceSettings {
             }
             return true;
         } catch (IOException failure) {
-            LOG.warn("Unable to save GalVoice settings", failure);
+            LOG.log(Level.WARNING, "Unable to save GalVoice settings", failure);
             return false;
         }
     }
