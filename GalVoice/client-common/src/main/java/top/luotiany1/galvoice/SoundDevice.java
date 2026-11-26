@@ -10,13 +10,31 @@ import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
-record SoundDevice(String id, String label, Mixer.Info mixer) {
+final class SoundDevice {
+    private final String id;
+    private final String label;
+    private final Mixer.Info mixer;
+
+    private SoundDevice(String id, String label, Mixer.Info mixer) {
+        this.id = id;
+        this.label = label;
+        this.mixer = mixer;
+    }
+
+    String id() {
+        return id;
+    }
+
+    String label() {
+        return label;
+    }
+
     private static final int[] RATES = {VoicePacket.RATE, 48000, 44100};
 
     static List<SoundDevice> list(boolean input) {
         List<SoundDevice> options = new ArrayList<>();
         options.add(new SoundDevice("", "", null));
-        var info = new DataLine.Info(input ? TargetDataLine.class : SourceDataLine.class, null);
+        DataLine.Info info = new DataLine.Info(input ? TargetDataLine.class : SourceDataLine.class, null);
         for (Mixer.Info mixer : AudioSystem.getMixerInfo()) {
             try {
                 if (!AudioSystem.getMixer(mixer).isLineSupported(info)) {
@@ -54,8 +72,8 @@ record SoundDevice(String id, String label, Mixer.Info mixer) {
                     line = (DataLine) (requested == null ? AudioSystem.getLine(info)
                             : AudioSystem.getMixer(requested).getLine(info));
                     int bufferBytes = frameBytes(format) * 3;
-                    if (line instanceof TargetDataLine capture) {
-                        capture.open(format, bufferBytes);
+                    if (line instanceof TargetDataLine) {
+                        ((TargetDataLine) line).open(format, bufferBytes);
                     } else {
                         ((SourceDataLine) line).open(format, bufferBytes);
                     }
@@ -69,7 +87,7 @@ record SoundDevice(String id, String label, Mixer.Info mixer) {
                 }
             }
         }
-        var failure = new LineUnavailableException("No supported 16-bit PCM format for the selected device");
+        LineUnavailableException failure = new LineUnavailableException("No supported 16-bit PCM format for the selected device");
         failure.initCause(last);
         throw failure;
     }

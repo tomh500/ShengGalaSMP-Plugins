@@ -1,0 +1,10 @@
+[
+  {
+    "modid": "galvoice",
+    "name": "GalVoice",
+    "description": "Push-to-talk voice over ForgeMaster.",
+    "version": "${version}",
+    "mcversion": "1.12.2",
+    "dependencies": ["forgemaster"]
+  }
+]

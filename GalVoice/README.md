@@ -1,6 +1,6 @@
 # GalVoice 局内语音
 
-GalVoice 通过 SpigotMasterGAL 和 FabricMasterGAL 0.2.0 转发按键语音。语音随 Minecraft 连接经过现有 BungeeMasterGAL 路由，使用 GAL 事件 `galvoice:upload_v1` 和 `galvoice:audio_v1`。语音帧是 16 kHz 单声道 IMA ADPCM，每 40 ms 发送一帧。服务端按玩家的实时位置、竞技场和队伍选择接收者，姓名和频道由服务端填写。
+GalVoice 通过 SpigotMasterGAL 和客户端的 FabricMasterGAL 或 ForgeMaster 转发按键语音。语音随 Minecraft 连接经过现有 BungeeMasterGAL 路由，使用 GAL 事件 `galvoice:upload_v1` 和 `galvoice:audio_v1`。语音帧是 16 kHz 单声道 IMA ADPCM，每 40 ms 发送一帧。服务端按玩家的实时位置、竞技场和队伍选择接收者，姓名和频道由服务端填写。
 
 ## 客户端
 
@@ -10,6 +10,12 @@ GalVoice 通过 SpigotMasterGAL 和 FabricMasterGAL 0.2.0 转发按键语音。�
 - 按 **V** 或输入 `/galvoice` 打开语音设置，可选择麦克风和播放设备，并分别调节麦克风增益和播放音量。选择「完成」保存到客户端 `config/galvoice.properties`。
 - 生存服可在同一菜单切换「附近」或「同世界」收听，默认「附近」。该选择只影响自己的收听范围，同世界模式不跨维度。
 - 聊天栏下方显示发言者的头像、名字和频道。多人同时发言时按开始顺序并排显示，最多三张卡，`+N` 表示还有其他发言者。切服会清空已有的播放队列和发言提示。
+
+### Forge 1.12.2
+
+将 **GalVoice-Forge** 和 **ForgeMaster 0.1.0** 放进 Forge 1.12.2 客户端的 `mods`。构建与联测使用 Forge 14.23.5.2860 和 Java 8。默认鼠标键 4 按住发言，按 **V** 或输入 `/galvoice` 可选择设备、调节音量及更改后端允许的收听范围。切服或断线会清空播放队列和发言提示，继续发言前需松开并重新按下发言键。ForgeMaster 的源码、API 契约及开发包构建方式见 [MCQQBridge 兼容提交 `473a654`](https://github.com/tomh500/MCQQBridge/commit/473a65461ea697e40c68e11a54e225da40016b6f)。
+
+Forge 与 Fabric 使用相同的语音帧和服务端权限。已用发行 JAR 在真实 Forge 客户端验证首次进入及切服后的语音能力协商与同世界收听设置同步。联测使用 BungeeMasterGAL 0.3.2、SpigotMasterGAL 0.4.0 和两台本地 Spigot 1.12.2。真实麦克风采集和扬声器播放尚未进行端到端验证。
 
 ## 服务端
 
@@ -40,3 +46,11 @@ gradle -p GalVoice/fabric -PminecraftTarget=26.3 -PmasterGalJar=/path/to/FabricM
 ```
 
 构建 26.2 时，将目标和 MasterGAL JAR 都换为 26.2。客户端产物位于 `GalVoice/fabric/build/<版本>/libs/`。
+
+Forge 客户端使用 JDK 8 和 Gradle 4.9 构建，并传入 ForgeMaster 的开发 JAR。
+
+```powershell
+gradle -p GalVoice/forge112 build "-PmasterGalJar=C:/path/to/ForgeMaster-0.1.0-dev.jar"
+```
+
+客户端产物为 `GalVoice/forge112/build/libs/GalVoice-Forge-0.2.0+1.12.2.jar`。安装时搭配 ForgeMaster 的发行 JAR `ForgeMaster-0.1.0.jar`。
