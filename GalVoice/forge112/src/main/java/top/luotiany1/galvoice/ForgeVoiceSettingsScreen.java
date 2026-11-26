@@ -1,6 +1,11 @@
 package top.luotiany1.galvoice;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
@@ -18,6 +23,10 @@ final class ForgeVoiceSettingsScreen extends GuiScreen {
     private static final int VOLUME = 3;
     private static final int RANGE = 4;
     private static final int DONE = 5;
+    private static final boolean CHINESE_WINDOWS_JAVA8 =
+            "1.8".equals(System.getProperty("java.specification.version"))
+                    && System.getProperty("os.name", "").startsWith("Windows")
+                    && "GBK".equalsIgnoreCase(System.getProperty("sun.jnu.encoding"));
 
     private final VoiceSettings settings;
     private final VoiceAudio audio;
@@ -80,10 +89,39 @@ final class ForgeVoiceSettingsScreen extends GuiScreen {
         String selected = input ? settings.get().input() : settings.get().output();
         int index = findDevice(devices, selected);
         String label = index < 0 ? I18n.format("galvoice.device.missing")
-                : index == 0 ? I18n.format("galvoice.device.default") : devices.get(index).label();
+                : index == 0 ? I18n.format("galvoice.device.default") : deviceName(devices.get(index));
         String text = I18n.format(input ? "galvoice.device.input" : "galvoice.device.output", label);
         button.displayString = fontRenderer.trimStringToWidth(text, button.width - 10);
         button.enabled = devices.size() > 1 || index < 0;
+    }
+
+    private static String deviceName(SoundDevice device) {
+        String name = device.label();
+        if (!CHINESE_WINDOWS_JAVA8 || !device.id().contains("|Direct Audio Device: DirectSound ")
+                || name.chars().anyMatch(c -> Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN)
+                || name.chars().filter(c -> c >= 128 && c <= 255).count() < 2) {
+            return name;
+        }
+        // Java 8's DirectSound provider can pass GBK names to JNI as UTF-8.
+        // Recover the original bytes for display, keeping the device ID as reported by Java Sound.
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream(name.length());
+        name.codePoints().forEach(c -> {
+            if (c <= 255) {
+                bytes.write(c);
+            } else {
+                byte[] encoded = new String(Character.toChars(c)).getBytes(StandardCharsets.UTF_8);
+                bytes.write(encoded, 0, encoded.length);
+            }
+        });
+        try {
+            String decoded = Charset.forName("GBK").newDecoder().decode(ByteBuffer.wrap(bytes.toByteArray())).toString();
+            if (decoded.chars().filter(c -> Character.UnicodeScript.of(c) == Character.UnicodeScript.HAN).count() >= 2) {
+                return decoded;
+            }
+        } catch (CharacterCodingException ignored) {
+            // Preserve the original label if it was not an intact GBK string.
+        }
+        return name;
     }
 
     private static int findDevice(List<SoundDevice> devices, String id) {

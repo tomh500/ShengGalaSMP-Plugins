@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 
 group = 'top.luotiany1'
-version = '0.2.0+1.12.2'
+version = '0.2.1+1.12.2'
 archivesBaseName = 'GalVoice-Forge'
 sourceCompatibility = targetCompatibility = '1.8'
 
