@@ -13,7 +13,7 @@ GalVoice 通过 SpigotMasterGAL 和客户端的 FabricMasterGAL 或 ForgeMaster 
 
 ### Forge 1.12.2
 
-将 **GalVoice-Forge** 和 **ForgeMaster 0.1.0** 放进 Forge 1.12.2 客户端的 `mods`。构建与联测使用 Forge 14.23.5.2860 和 Java 8。默认鼠标键 4 按住发言，按 **V** 或输入 `/galvoice` 可选择设备、调节音量及更改后端允许的收听范围。切服或断线会清空播放队列和发言提示，继续发言前需松开并重新按下发言键。ForgeMaster 的源码、API 契约及开发包构建方式见 [MCQQBridge 兼容提交 `473a654`](https://github.com/tomh500/MCQQBridge/commit/473a65461ea697e40c68e11a54e225da40016b6f)。
+将 **GalVoice-Forge** 和 **ForgeMaster 0.1.0** 放进 Forge 1.12.2 客户端的 `mods`。使用 Java 8。构建目标为 Forge 14.23.5.2860，0.2.1 的简中和英文设置界面已在 Forge 14.23.5.2864 验证。默认鼠标键 4 按住发言，按 **V** 或输入 `/galvoice` 可选择设备、调节音量及更改后端允许的收听范围。切服或断线会清空播放队列和发言提示，继续发言前需松开并重新按下发言键。ForgeMaster 的源码、API 契约及开发包构建方式见 [MCQQBridge 兼容提交 `473a654`](https://github.com/tomh500/MCQQBridge/commit/473a65461ea697e40c68e11a54e225da40016b6f)。
 
 Forge 与 Fabric 使用相同的语音帧和服务端权限。已用发行 JAR 在真实 Forge 客户端验证首次进入及切服后的语音能力协商与同世界收听设置同步。联测使用 BungeeMasterGAL 0.3.2、SpigotMasterGAL 0.4.0 和两台本地 Spigot 1.12.2。真实麦克风采集和扬声器播放尚未进行端到端验证。
 
@@ -53,4 +53,4 @@ Forge 客户端使用 JDK 8 和 Gradle 4.9 构建，并传入 ForgeMaster 的开
 gradle -p GalVoice/forge112 build "-PmasterGalJar=C:/path/to/ForgeMaster-0.1.0-dev.jar"
 ```
 
-客户端产物为 `GalVoice/forge112/build/libs/GalVoice-Forge-0.2.0+1.12.2.jar`。安装时搭配 ForgeMaster 的发行 JAR `ForgeMaster-0.1.0.jar`。
+客户端产物为 `GalVoice/forge112/build/libs/GalVoice-Forge-0.2.1+1.12.2.jar`。安装时搭配 ForgeMaster 的发行 JAR `ForgeMaster-0.1.0.jar`。
